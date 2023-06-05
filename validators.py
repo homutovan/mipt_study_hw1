@@ -7,5 +7,3 @@ class Company(BaseModel):
     okved: str
     name: str
     full_name: str
-
-    

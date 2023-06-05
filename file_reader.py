@@ -15,16 +15,17 @@ class FileReader:
     logger = get_logger(__name__)
 
     @classmethod
-    def read_json_by_path(cls, path: str) -> Generator[Dict[str, str], None, None]:
+    def read_json_by_path(
+            cls, path: str) -> Generator[Dict[str, str], None, None]:
         with open(path) as f:
             for item in json.load(f):
                 yield item
 
     @classmethod
-    def read_json_by_bytes(cls, payload: bytes) -> Generator[Dict[str, str], None, None]:
+    def read_json_by_bytes(
+            cls, payload: bytes) -> Generator[Dict[str, str], None, None]:
         for item in json.loads(payload):
             yield item
-
 
     @classmethod
     def read_zip(cls, path: str) -> Generator[Dict[str, str], None, None]:
@@ -38,11 +39,10 @@ class FileReader:
             [cls.queue_in.put(filename) for filename in zf.namelist()]
 
         workers = [Process(
-            target = cls.extractor, 
-            args = (path,), 
+            target=cls.extractor,
+            args=(path,),
             daemon=True) for __ in range(cpu_count())
             ]
-        
         [worker.start() for worker in workers]
 
         while any([worker.is_alive() for worker in workers]):
@@ -54,7 +54,6 @@ class FileReader:
                 continue
 
         cls.logger.info('Reading ended')
-
 
     @classmethod
     def extractor(cls, path: str) -> None:
@@ -72,4 +71,3 @@ class FileReader:
     @classmethod
     def parse_item(cls, item: Dict[str, str]) -> Dict[str, str]:
         return item
-

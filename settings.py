@@ -13,4 +13,3 @@ THRESHOLD = 1000
 
 SOURCE1 = 'files/okved_2.json'
 SOURCE2 = 'files/egrul.json.zip'
-

@@ -14,11 +14,10 @@ def get_logger(name):
 
     stream_handler = StreamHandler(sys.stdout)
     file_handler = RotatingFileHandler(
-        f'{log_path}/{name}.log', 
-        maxBytes=100000, 
+        f'{log_path}/{name}.log',
+        maxBytes=100000,
         backupCount=100,
         ) or NullHandler()
-    
     handlers = []
 
     if VERBOSE:
@@ -28,13 +27,12 @@ def get_logger(name):
         handlers.append(file_handler)
 
     basicConfig(
-        handlers = handlers,
-        format = '%(asctime)s %(levelname)-5s: %(processName) -25s: %(message)s',
-        level = DEBUG,
+        handlers=handlers,
+        format='%(asctime)s %(levelname)-5s: %(processName) -25s: %(message)s',
+        level=DEBUG,
     )
 
     logger = getLogger(name)
-    logger.disabled = not (VERBOSE or log_file) 
+    logger.disabled = not (VERBOSE or log_file)
 
     return logger
-

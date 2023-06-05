@@ -3,6 +3,7 @@ from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
+
 class TypeOfBusiness(Base):
     __tablename__ = 'type_of_buisness'
 
@@ -24,5 +25,3 @@ class Company(Base):
     kpp = Column(String(255), nullable=False)
     # okved = Column(String(255), nullable=False)
     okved = Column(String(255), ForeignKey('type_of_buisness.code'))
-
-
