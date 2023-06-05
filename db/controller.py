@@ -1,8 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from psycopg2 import errors
-from models import Base, TypeOfBusiness
+import psycopg2
+from models import Base, TypeOfBusiness, Company
 from typing import List, Dict
+from settings import THRESHOLD
+
+from sqlalchemy.exc import SQLAlchemyError
 
 
 class Driver:
@@ -29,6 +32,8 @@ class Driver:
         
         else:
             self._data_list.append(*data)
+            if len(self._data_list) >= THRESHOLD:
+                return self.commit()
             return True
 
 
@@ -40,16 +45,11 @@ class Driver:
 
             return True
         
-        except errors.StringDataRightTruncation:
-            print('value too long for type character')
-        
-        except Exception as e:
-            print(e)##################################
-            print('ERROR!!')##########################
-            raise Exception(e)
+        except SQLAlchemyError as e:
+            print(e)
             return False
         
-
+        
     def commit(self) -> bool:
         data = [*self._data_list]
         self._data_list = []
@@ -60,9 +60,13 @@ class Controller(Driver):
     '''
     '''
 
-    def add_type_of_business(self, data: List[Dict[str, str]]) -> bool:
+    def add_type_of_business(self, data: List[Dict[str, str]], commit=True) -> bool:
         return self.add_data(list(map(
-            lambda x: TypeOfBusiness(**x), data))
+            lambda x: TypeOfBusiness(**x), data)), commit=commit
             )
     
+    def add_company(self, data: List[Dict[str, str]], commit=True) -> bool:
+        return self.add_data(list(map(
+            lambda x: Company(**x), data)), commit=commit
+            )
     
