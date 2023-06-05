@@ -37,9 +37,10 @@ class FileReader:
         with ZipFile(path) as zf:
             [cls.queue_in.put(filename) for filename in zf.namelist()]
 
-        workers = [
-            Process(target = cls.extractor, args = (path,), daemon=True) 
-            for __ in range(cpu_count())
+        workers = [Process(
+            target = cls.extractor, 
+            args = (path,), 
+            daemon=True) for __ in range(cpu_count())
             ]
         
         [worker.start() for worker in workers]
@@ -50,23 +51,23 @@ class FileReader:
                     yield cls.queue_out.get(True, 0.1)
 
             except queue.Empty:
-                pass
+                continue
 
         cls.logger.info('Reading ended')
 
+
     @classmethod
     def extractor(cls, path: str) -> None:
-        cls.logger.info('worker started')
-        target_folder, __ = path.split('/')
+        cls.logger.info('Worker started')
         with ZipFile(path) as zf:
             while not cls.queue_in.empty():
                 filename = cls.queue_in.get()
-                payload = zf.read(filename)
-                for item in cls.read_json_by_bytes(payload):
-                    if (parsed_item := cls.parse_item(item)):
-                        cls.queue_out.put(parsed_item)
+                with zf.open(filename) as f:
+                    for item in cls.read_json_by_bytes(f.read()):
+                        if (parsed_item := cls.parse_item(item)):
+                            cls.queue_out.put(parsed_item)
 
-        cls.logger.info('worker stopped')
+        cls.logger.info('Worker stopped')
 
     @classmethod
     def parse_item(cls, item: Dict[str, str]) -> Dict[str, str]:
