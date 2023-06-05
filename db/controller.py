@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import psycopg2
-from models import Base, TypeOfBusiness, Company
-from typing import List, Dict
-from settings import THRESHOLD
-
 from sqlalchemy.exc import SQLAlchemyError
+from typing import List, Dict
+from utils import get_logger
+from settings import THRESHOLD
+from models import Base, TypeOfBusiness, Company
 
 
 class Driver:
@@ -16,6 +15,7 @@ class Driver:
         self.engine = create_engine(DB_URI, echo=VERBOSE)
         self.session_factory = sessionmaker(self.engine, expire_on_commit=True)
         self._data_list = []
+        self.logger = get_logger(__name__)
 
     
     def create_db(self) -> None:
@@ -46,7 +46,7 @@ class Driver:
             return True
         
         except SQLAlchemyError as e:
-            print(e)
+            self.logger.error(e)
             return False
         
         

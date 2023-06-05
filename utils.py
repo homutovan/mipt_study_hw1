@@ -2,21 +2,19 @@ from logging import StreamHandler, NullHandler, basicConfig, DEBUG, getLogger
 from logging.handlers import RotatingFileHandler
 import sys
 import os
-
-from settings import VERBOSE, log_file
-
-if log_file:
-    if not os.path.isdir('logs'):
-        os.mkdir('logs')
+from settings import VERBOSE, log_file, log_path
 
 
 def get_logger(name):
     '''
     '''
+    if log_file:
+        if not os.path.isdir(log_path):
+            os.mkdir(log_path)
 
     stream_handler = StreamHandler(sys.stdout)
     file_handler = RotatingFileHandler(
-        f'logs/{name}.log', 
+        f'{log_path}/{name}.log', 
         maxBytes=100000, 
         backupCount=100,
         ) or NullHandler()
@@ -39,3 +37,4 @@ def get_logger(name):
     logger.disabled = not (VERBOSE or log_file) 
 
     return logger
+

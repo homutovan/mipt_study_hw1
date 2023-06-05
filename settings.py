@@ -2,6 +2,7 @@
 
 VERBOSE = True
 log_file = True
+log_path = 'logs'
 
 # DataBase settings
 
@@ -11,5 +12,5 @@ THRESHOLD = 1000
 # File source settings
 
 SOURCE1 = 'files/okved_2.json'
-SOURCE2 = 'files/egrul2.json.zip'
+SOURCE2 = 'files/egrul.json.zip'
 
