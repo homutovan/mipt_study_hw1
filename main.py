@@ -1,7 +1,8 @@
-from db.controller import Controller
-from settings import DB_URI, VERBOSE, SOURCE1, SOURCE2
 from typing import Dict
+
+from db.controller import Controller
 from file_reader import FileReader
+from settings import DB_URI, SOURCE1, SOURCE2, VERBOSE
 from utils import get_logger
 from validators import Company
 
@@ -10,7 +11,7 @@ class CustomReader(FileReader):
     @classmethod
     def parse_item(cls, item: Dict[str, str]) -> Dict[str, str] | None:
         okved = item.get(
-            'data', {}
+            'data', {},
             ).get('СвОКВЭД', {}).get('СвОКВЭДОсн', {}).get('КодОКВЭД', '')
 
         if okved.split('.')[0] == '61':
@@ -32,6 +33,7 @@ def task_1(controller: Controller) -> None:
 def task_2(controller: Controller) -> None:
     for item in CustomReader.read_zip(SOURCE2):
         controller.add_company([item], commit=False)
+
     controller.commit()
 
 

@@ -1,14 +1,15 @@
-from typing import Dict, Generator
 import json
-from zipfile import ZipFile, is_zipfile
-from multiprocessing import Process, Queue, cpu_count
-from utils import get_logger
 import queue
+from multiprocessing import Process, Queue, cpu_count
+from typing import Dict, Generator
+from zipfile import ZipFile, is_zipfile
+
+from utils import get_logger
 
 
 class FileReader:
-    '''
-    '''
+    """
+    """
 
     queue_in = Queue()
     queue_out = Queue()

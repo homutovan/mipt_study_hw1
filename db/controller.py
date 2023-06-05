@@ -1,18 +1,20 @@
+from typing import Dict, List
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import SQLAlchemyError
-from typing import List, Dict
-from utils import get_logger
+from sqlalchemy.orm import sessionmaker
+
+from db.models import Base, Company, TypeOfBusiness
 from settings import THRESHOLD
-from models import Base, TypeOfBusiness, Company
+from utils import get_logger
 
 
 class Driver:
-    '''
-    '''
+    """
+    """
 
-    def __init__(self, DB_URI: str, VERBOSE: bool) -> None:
-        self.engine = create_engine(DB_URI, echo=VERBOSE)
+    def __init__(self, uri: str, verbose: bool) -> None:
+        self.engine = create_engine(uri, echo=verbose)
         self.session_factory = sessionmaker(self.engine, expire_on_commit=True)
         self._data_list = []
         self.logger = get_logger(__name__)
@@ -30,6 +32,7 @@ class Driver:
             self._data_list.append(*data)
             if len(self._data_list) >= THRESHOLD:
                 return self.commit()
+
             return True
 
     def _add_record(self, data: List[Base]) -> bool:
@@ -37,6 +40,7 @@ class Driver:
             with self.session_factory() as session:
                 session.add_all(data)
                 session.commit()
+
             return True
         except SQLAlchemyError as e:
             self.logger.error(e)
@@ -49,20 +53,20 @@ class Driver:
 
 
 class Controller(Driver):
-    '''
-    '''
+    """
+    """
 
     def add_type_of_business(
             self,
             data: List[Dict[str, str]],
             commit=True) -> bool:
         return self.add_data(list(map(
-            lambda x: TypeOfBusiness(**x), data)), commit=commit
+            lambda x: TypeOfBusiness(**x), data)), commit=commit,
             )
 
     def add_company(self,
                     data: List[Dict[str, str]],
                     commit=True) -> bool:
         return self.add_data(list(map(
-            lambda x: Company(**x), data)), commit=commit
+            lambda x: Company(**x), data)), commit=commit,
             )

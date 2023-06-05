@@ -1,13 +1,14 @@
-from logging import StreamHandler, NullHandler, basicConfig, DEBUG, getLogger
-from logging.handlers import RotatingFileHandler
-import sys
 import os
+import sys
+from logging import DEBUG, NullHandler, StreamHandler, basicConfig, getLogger
+from logging.handlers import RotatingFileHandler
+
 from settings import VERBOSE, log_file, log_path
 
 
 def get_logger(name):
-    '''
-    '''
+    """
+    """
     if log_file:
         if not os.path.isdir(log_path):
             os.mkdir(log_path)

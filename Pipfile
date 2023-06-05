@@ -10,6 +10,15 @@ pydantic = "*"
 
 [dev-packages]
 flake8 = "*"
+flake8-import-order = "*"
+flake8-builtins = "*"
+flake8-quotes = "*"
+flake8-bugbear = "*"
+pep8-naming = "*"
+flake8-warnings = "*"
+dlint = "*"
+flake8-commas = "*"
+flake8-clean-block = "*"
 
 [requires]
 python_version = "3.10"

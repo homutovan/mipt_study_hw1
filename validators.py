@@ -2,6 +2,8 @@ from pydantic import BaseModel
 
 
 class Company(BaseModel):
+    """
+    """
     inn: str
     kpp: str
     okved: str
